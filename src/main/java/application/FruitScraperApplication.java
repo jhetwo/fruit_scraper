@@ -7,7 +7,7 @@ import model.RipeFruit;
 import model.json.RipeFruitTypeAdapter;
 import scraper.WebScraper;
 
-public class FruitScraperController {
+public class FruitScraperApplication {
 
     private final Gson gson = new GsonBuilder()
             .setPrettyPrinting()
@@ -16,13 +16,19 @@ public class FruitScraperController {
             .create();
     private final WebScraper scraper;
 
-    public FruitScraperController(WebScraper scraper) {
+    public FruitScraperApplication(WebScraper scraper) {
         this.scraper = scraper;
     }
 
     public String scrape() {
         FruitResults results = scraper.getScrapeResults();
         return gson.toJson(results);
+    }
+
+
+    public static void main(String[] args){
+        FruitScraperApplication fruitScraperApplication = new FruitScraperApplication(new WebScraper());
+        System.out.println(fruitScraperApplication.scrape());
     }
 
 }

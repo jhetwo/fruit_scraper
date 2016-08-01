@@ -6,10 +6,9 @@ import com.google.gson.stream.JsonWriter;
 import model.RipeFruit;
 
 import java.io.IOException;
+import java.math.MathContext;
+import java.math.RoundingMode;
 
-/**
- * Created by John on 01/08/2016.
- */
 public class RipeFruitTypeAdapter extends TypeAdapter<RipeFruit> {
 
     @Override
@@ -25,7 +24,7 @@ public class RipeFruitTypeAdapter extends TypeAdapter<RipeFruit> {
         fruit.getPrice()
                 .ifPresent(price -> {
                     try {
-                        out.name("unit_price").value(price);
+                        out.name("unit_price").value(price.round(new MathContext(2, RoundingMode.CEILING)));
                         // TODO: precision to 2 dp
                     } catch (IOException e) {
                         // This is not a recoverable state, so best thing is to let it fail
@@ -48,6 +47,6 @@ public class RipeFruitTypeAdapter extends TypeAdapter<RipeFruit> {
 
     @Override
     public RipeFruit read(JsonReader in) throws IOException {
-        return null;
+        throw new RuntimeException("Not Implemented");
     }
 }

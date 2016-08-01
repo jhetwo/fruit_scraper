@@ -1,4 +1,7 @@
 apply plugin: 'java'
+apply plugin: 'application'
+
+mainClassName = "application.FruitScraperApplication"
 
 repositories { jcenter() }
 dependencies {
