@@ -1,15 +1,12 @@
 ### README
 
 To build: `gradle build`
-
+To run: `gradle test`
 To run: `gradle run`
 
-The first test written was the integration test, after this time pressure lead to prioritising functional code over test coverage. As such coverage is not as high as it should be.  
+The first class written was the integration test, though it changed significantly as my understanding of the problem gre. Time pressure lead to prioritising functional code over unit test coverage, as such it's not as high as it should be, normally I would have included fine grained unit tests for all classes.  Given the very limited scope of the application though the integration test alone is adequate in my opinion, further testing would only bring benefit if further functionality were introduced for regression purposes and to demonstrate usage.
+  
+One of the first decisions I made, before I'd realised how tight time was, was to create a domain model. In practice this does bring benefits even in a trivial application but would be essential in an application with greater scope. I stopped short of introducing ports and adapters to allow swapping out of components, for example the scraper or console interface, but this would again be a priority in a non trivial application.  The WebScraper class could be easily be implemented as an interface to allow scraping of other sites, or even retrieving directly from a data store.
 
-At the time of writing known issues include (also see TODO comments):
- - JSON formatting of numbers is not to 2 decimal places
- - Total sum is subject to rounding errors at point of marshalling to json
- - The git commit history is not as informative as I'd intended. In practice with large stories like this my usual approach would be to commit often as I have done with many work in progress commits, and then do an interactive rebase to provide meaningful comments and squash any commits that don't constitute a coherent block of work.  
- 
- Improvements:
- - Checked exceptions being rethrown as RuntimeExceptions in a number of places where recover is not feasible given the sparse requirements
+
+  

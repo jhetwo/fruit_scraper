@@ -1,38 +1,52 @@
 package integration;
 
 
-import application.FruitScraperApplication;
+import com.google.gson.FieldNamingPolicy;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonPrimitive;
+import com.google.gson.JsonSerializer;
+import controller.ScrapeController;
 import helper.TestHelper;
+import model.FileSize;
 import org.json.JSONException;
 import org.junit.Before;
 import org.junit.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
-import scraper.WebScraper;
+import scraper.ResultsPageScraper;
 
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
 
 public class IntegrationTest {
 
     private final TestHelper testHelper = new TestHelper();
-    private FruitScraperApplication fruitScraperApplication;
+    private ScrapeController scrapeController;
     private String expected;
-    private WebScraper scraper;
+    private ResultsPageScraper scraper;
 
     @Before
     public void beforeEach() throws IOException {
-        scraper = new WebScraper();
-        fruitScraperApplication = new FruitScraperApplication(scraper);
+        scraper = new ResultsPageScraper();
+        scrapeController = new ScrapeController(scraper, new GsonBuilder()
+                .setPrettyPrinting()
+                .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
+                .registerTypeAdapter(BigDecimal.class,
+                        (JsonSerializer<BigDecimal>) (src, typeOfSrc, context) -> new JsonPrimitive(src.setScale(2, BigDecimal.ROUND_UP)))
+                .registerTypeAdapter(FileSize.class,
+                        (JsonSerializer<FileSize>) (src, typeOfSrc, context) -> new JsonPrimitive(new DecimalFormat("0.##kb").format(src.getSize())))
+                .create());
 
         expected = testHelper.getStringFromFile("src/test/resources/expectedIntegrationTestOutput.json");
     }
 
     @Test
-    public void givenScraperCreatedWithOutput_whenScrapeCalled_thenCorrectJsonShouldBeReturned() throws IOException, JSONException {
-        // This test is the first written and should be the last to pass.  In this instance there is a degree of uncertainty
-        // as to the final form of the output and the implementation as I'm working with unfamiliar libraries, as such this
-        // test is likely to evolve with the code.
+    public void whenScrapeCalled_thenCorrectJsonShouldBeReturned() throws IOException, JSONException {
+        // This test is the first written and should be the last to pass.  It's currently running against the real
+        // endpoint which is a very bad idea in real life. I've done it here in the interests of brevity and to prevent
+        // having to pull in more dependencies such as WireMock.
 
-        String actual = fruitScraperApplication.scrape();
+        String actual = scrapeController.getScrapeAsJson();
         JSONAssert.assertEquals(expected, actual, true);
     }
 

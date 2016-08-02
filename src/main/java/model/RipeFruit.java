@@ -5,18 +5,18 @@ import java.util.Optional;
 
 public class RipeFruit {
     private final String title;
-    private final Float size;
+    private final FileSize size;
     private final BigDecimal unitPrice;
     private final String description;
 
-    public RipeFruit(String title, Float size, BigDecimal unitPrice, String description) {
+    public RipeFruit(String title, Float fileSize, BigDecimal unitPrice, String description) {
         this.title = title;
+        this.size = new FileSize(fileSize);
         this.unitPrice = unitPrice;
         this.description = description;
-        this.size = size;
     }
 
-    public Optional<BigDecimal> getPrice() {
+    public Optional<BigDecimal> getUnitPrice() {
         return Optional.ofNullable(unitPrice);
     }
 
@@ -24,7 +24,7 @@ public class RipeFruit {
         return Optional.ofNullable(title);
     }
 
-    public Optional<Float> getSize() {
+    public Optional<FileSize> getSize() {
         return Optional.ofNullable(size);
     }
 
